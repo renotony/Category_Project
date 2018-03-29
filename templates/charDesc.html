@@ -1,0 +1,43 @@
+<html>
+<head>
+  <link rel=stylesheet type=text/css href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+  <div class='pane'>
+    <div class='header'>
+      <h1>{{play.title}}</h1>
+      <br/><br />
+      <h2>{{character.name}}
+    </div>
+
+    <div class='flash'>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+          <ul>
+            {% for message in messages %}
+              <li> <strong> {{message}}</strong></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+    </br>
+    <div class='description'>{{character.description}}</div>
+    </p>
+    <div class='editdeletepane'>
+      <a href='{{url_for('editCharacter', play_id = play.id, char_id=character.id)}}'>Edit</a>
+      </br>
+      <a href='{{url_for('clearDesc', play_id = play.id, char_id = character.id)}}'>Delete</a>
+    </div>
+    </br>
+
+        <a class = 'title' href = '{{url_for('playChars', play_id = play.id)}}'> Return to Play </a>
+
+  </div>
+
+
+
+  </body>
+
+</html>

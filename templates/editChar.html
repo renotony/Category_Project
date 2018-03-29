@@ -1,0 +1,31 @@
+<html>
+<head>
+  <link rel=stylesheet type=text/css href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+<h1> Edit Character </h1>
+
+<form action="{{ url_for('editCharacter', play_id = play_id, char_id = i.id)}}" method = 'POST'>
+
+<dl>
+  <dt>Name:</dt>
+    <dd><input type='text' size='38' name='name' placeholder = '{{i.name}}'></dd>
+  <dt>Description:</dt>
+    <dd><textarea name='description' rows='5' cols='40' placeholder="{{i.description}}"></textarea></dd>
+  <dt>Play:</dt>
+    <dd>
+      <select name="playlist" width="300px">
+        {% for o in option_list %}
+          <option value="{{ o.id}}" {% if o.id == play_id %} SELECTED={{o.title}} {% endif %}>{{ o.title }}</option>
+        {% endfor %}
+      </select>
+    </dd>
+</dl>
+
+    <input type='submit' value='Edit'>
+
+  <a href = '{{url_for('playChars', play_id = i.play_id)}}'>Cancel</a>
+</form>
+
+</body>
+</html>

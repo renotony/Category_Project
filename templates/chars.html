@@ -1,0 +1,63 @@
+<html>
+<head>
+  <link rel=stylesheet type=text/css href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+  <div class='pane'>
+    <div class='header'>
+      <h1>{{play.title}}</h1>
+    </div>
+
+    <div class='flash'>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+          <ul>
+            {% for message in messages %}
+              <li> <strong> {{message}}</strong></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+    </br>
+    {% if characters !=[] %}
+      <a class='new' href = '{{url_for('newCharacter', play_id = play.id)}}'>Add New Character</a>
+      </br></br>
+
+      {% for char in characters %}
+
+
+          <p>
+            <a class='name' href="{{url_for('charDesc', play_id=play.id, char_id=char.id)}}"><span>{{char.name}}</span></a>
+            </br>
+          </p>
+          <div class='editdeletepane'>
+            <a href='{{url_for('editCharacter', play_id = play.id, char_id=char.id)}}'>Edit</a>
+            </br>
+            <a href='{{url_for('deleteCharacter', play_id = play.id, char_id = char.id)}}'>Delete</a>
+          </div>
+          </br>
+
+      {% endfor %}
+
+    {% else %}
+
+        <p> There are no characters for this play.
+        </br>
+          <a class='new' href = '{{url_for('newCharacter', play_id = play.id)}}'>Add New Character</a>
+        </p>
+
+    {% endif %}
+
+
+
+        <a class = 'title' href = '{{url_for('plays')}}'> Return to Plays </a>
+
+  </div>
+
+
+
+  </body>
+
+</html>

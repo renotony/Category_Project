@@ -1,0 +1,19 @@
+<html>
+<head>
+  <link rel=stylesheet type=text/css href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+  <h1> New Play </h1>
+
+  <form action="{{url_for('newPlay')}}" method = 'POST'>
+
+    <p>Title:</p>
+
+    <input type='text' size='30' name='title'>
+
+    <input type='submit' value='Create'>
+
+  </form>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<html>
+<head>
+  <link rel=stylesheet type=text/css href="{{url_for('static', filename='styles.css')}}">
+</head>
+  <body>
+    <div class='pane'>
+      <div class='header'>
+        <h1>Tony's Plays</h1>
+      </div>
+
+      <a class='new' href = '{{url_for('newPlay')}}'>Add New Play</a>
+      <div class='flash'>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+
+              <ul>
+                  {% for message in messages %}
+                    <li> <strong> {{message}}</strong></li>
+                  {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+
+
+  </br>
+
+    {% for play in titles %}
+
+    <div class = 'nameAndDesc'>
+      <p>
+
+        <a class='title' href="{{url_for('playChars', play_id=play.id)}}"><span>{{play.title}}</span></a>
+
+      </p>
+
+        <div class='editdeletepane'>
+    <a href='{{url_for('editPlay', play_id = play.id)}}'>Edit</a>
+  </br>
+          <a href='{{url_for('deletePlay', play_id = play.id)}}'>Delete</a>
+        </div>
+  </br>
+
+    {% endfor %}
+
+    </div>
+  </div>
+
+  </body>
+
+</html>

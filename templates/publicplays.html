@@ -1,0 +1,37 @@
+<html>
+<body>
+  <div>
+    <div></div>
+    <div>
+      <a href="{{url_for('showLogin')}}">Click Here to Log in</a>
+    </div>
+  </div>
+  <div>
+    <hr>
+  </div>
+  <div>
+    <div></div>
+    <div>
+      <h1>Tony's Plays</h1>
+    </div>
+  </div>
+  <div class='flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+  </div>
+  <div>
+    {% for play in plays %}
+      <a href = "{{url_for('playChars', play_id= play.id)}}">
+        <h3>{{play.title}}</h3>
+      </a>
+    {% endfor %}
+
+</body>
+</html>
