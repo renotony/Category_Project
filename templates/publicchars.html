@@ -5,7 +5,12 @@
 <body>
   <div class='pane'>
     <div class='header'>
-      <h1>{{play.title}}</h1>
+      <h1>{{play.title}}
+        <figure>
+          <img src="{{creator.picture}}">
+          <figcaption>{{creator.name}}</figcaption>
+        </figure>
+      </h1>
     </div>
 
     <div class='flash'>
@@ -22,21 +27,13 @@
     </div>
     </br>
     {% if characters !=[] %}
-      <a class='new' href = '{{url_for('newCharacter', play_id = play.id)}}'>Add New Character</a>
-      </br></br>
-
       {% for char in characters %}
 
 
           <p>
-            <a class='name' href="{{url_for('charDesc', play_id=play.id, char_id=char.id)}}"><span><h2>{{char.name}}</h2></span></a>
-          </p>
-          <div class='editdeletepane'>
-            <a href='{{url_for('editCharacter', play_id = play.id, char_id=char.id)}}'>Edit</a>
-            &nbsp&nbsp
-            <a href='{{url_for('deleteCharacter', play_id = play.id, char_id = char.id)}}'>Delete</a>
-          </div>
+            <a class='name' href="{{url_for('charDesc', play_id=play.id, char_id=char.id)}}"><span>{{char.name}}</span></a>
 
+          </p>
 
 
       {% endfor %}
@@ -45,7 +42,6 @@
 
         <p> There are no characters for this play.
         </br>
-          <a class='new' href = '{{url_for('newCharacter', play_id = play.id)}}'>Add New Character</a>
         </p>
 
     {% endif %}

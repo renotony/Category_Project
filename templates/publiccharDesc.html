@@ -5,9 +5,11 @@
 <body>
   <div class='pane'>
     <div class='header'>
-      <h1>{{play.title}}</h1>
-      <br/><br />
-      <h2>{{character.name}}</h2>
+      <h1>{{play.title}}
+        <br /><br />
+        <h2>{{character.name}}</h2>
+        </h1>
+
     </div>
 
     <div class='flash'>
@@ -26,12 +28,7 @@
     <p>
     <div class='description'>{{character.description}}</div>
     </p>
-    <div class='editdeletepane'>
-      <a href='{{url_for('editCharacter', play_id = play.id, char_id=character.id)}}'>Edit</a>
-      </br>
-      <a href='{{url_for('clearDesc', play_id = play.id, char_id = character.id)}}'>Delete</a>
-    </div>
-    </br>
+
 
         <a class = 'title' href = '{{url_for('playChars', play_id = play.id)}}'> Return to Play </a>
 

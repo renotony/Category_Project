@@ -144,7 +144,6 @@ def createUser(login_session):
 def gdisconnect():
         # Only disconnect a connected user.
     access_token = login_session.get('access_token')
-    print("access_token = " + access_token)
     if access_token is None:
         response = make_response(
             json.dumps('Current user not connected.'), 401)
@@ -153,7 +152,6 @@ def gdisconnect():
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-
     if result['status'] == '200':
         # Reset the user's sesson.
         del login_session['access_token']
@@ -213,9 +211,11 @@ def newPlay():
 
 @app.route('/plays/<int:play_id>/edit', methods=['GET', 'POST'])
 def editPlay(play_id):
+    editedPlay = session.query(Plays).filter_by(id=play_id).one()
     if 'username' not in login_session:
         return redirect('/login')
-    editedPlay = session.query(Plays).filter_by(id=play_id).one()
+    if editedPlay.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to edit this play. Please create your own play in order to edit.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['title']:
             editedPlay.title = request.form['title']
@@ -228,9 +228,11 @@ def editPlay(play_id):
 
 @app.route('/plays/<int:play_id>/delete', methods=['GET', 'POST'])
 def deletePlay(play_id):
+    deletedPlay = session.query(Plays).filter_by(id=play_id).one()
     if 'username' not in login_session:
         return redirect('/login')
-    deletedPlay = session.query(Plays).filter_by(id=play_id).one()
+    if deletedPlay.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to delete this play. Please create your own play in order to delete.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(deletedPlay)
         session.commit()
@@ -244,13 +246,20 @@ def deletePlay(play_id):
 @app.route('/plays/<int:play_id>/chars')
 def playChars(play_id):
     play = session.query(Plays).filter_by(id = play_id).one()
+    creator = getUserInfo(play.user_id)
     characters = session.query(Characters).filter_by(play_id = play.id).all()
-    return render_template('chars.html', play=play, characters=characters)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('publicchars.html', play=play, creator=creator, characters=characters)
+    else:
+        return render_template('chars.html', play=play, characters=characters)
 
 @app.route('/plays/<int:play_id>/new', methods=['GET', 'POST'])
 def newCharacter(play_id):
     if 'username' not in login_session:
         return redirect('/login')
+    play = session.query(Plays).filter_by(id=play_id).one()
+    if login_session['user_id'] != play.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to add characters to this play.  Please create your own play in order to add characters.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         newChar = Characters(name = request.form['name'], description=request.form['description'], play_id = play_id, user_id=login_session['user_id'])
         session.add(newChar)
@@ -265,7 +274,10 @@ def editCharacter(play_id, char_id):
     if 'username' not in login_session:
         return redirect('/login')
     editedChar = session.query(Characters).filter_by(id = char_id).one()
+    play = session.query(Plays).filter_by(id=play_id).one()
     playList = session.query(Plays).all()
+    if login_session['user_id'] != play.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to edit characters in this play.  Please create your own play to be able to edit characters.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['name']:
             editedChar.name = request.form['name']
@@ -284,7 +296,10 @@ def editCharacter(play_id, char_id):
 def deleteCharacter(play_id, char_id):
     if 'username' not in login_session:
         return redirect('/login')
+    play = session.query(Plays).filter_by(id=play_id).one()
     charToDelete = session.query(Characters).filter_by(id=char_id).one()
+    if login_session['user_id'] != play.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to delete a character in this play.  Please create your own play to delete characters.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(charToDelete)
         session.commit()
@@ -296,8 +311,12 @@ def deleteCharacter(play_id, char_id):
 @app.route('/plays/<int:play_id>/<int:char_id>/description')
 def charDesc(play_id, char_id):
     play = session.query(Plays).filter_by(id = play_id).one()
+    creator = getUserInfo(play.user_id)
     character = session.query(Characters).filter_by(id = char_id).one()
-    return render_template('charDesc.html', play=play, character=character)
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        return render_template('publiccharDesc.html', play=play, character=character, creator=creator)
+    else:
+        return render_template('charDesc.html', play=play, character=character, creator=creator)
 
 @app.route('/plays/<int:play_id>/<int:char_id>/cleardesc', methods=['GET', 'POST'])
 def clearDesc(play_id, char_id):
@@ -305,6 +324,9 @@ def clearDesc(play_id, char_id):
         return redirect('/login')
     editedChar = session.query(Characters).filter_by(id = char_id).one()
     playList = session.query(Plays).all()
+    play = session.query(Plays).filter_by(id=play_id).one()
+    if login_session['user_id'] != play.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to delete the description of this character.  Please create your own play and characters and descriptions to be able to delete a description');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
             editedChar.description = ""
             session.add(editedChar)
