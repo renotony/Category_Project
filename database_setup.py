@@ -35,6 +35,7 @@ class Plays(Base):
     title = Column(String(255), nullable = False)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    characters = relationship('Characters', cascade='all, delete-orphan')
     @property
     def serialize(self):
         return {
